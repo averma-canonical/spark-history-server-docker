@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hstest
+spec:
+  securityContext:  
+    runAsUser: 185
+    runAsGroup: 185
+  containers:  
+  - image: docker.io/dataplatformoci/spark:3.3.1
+    name: hstest
+    ports:
+    - containerPort: 18080
+    env: 
+    - name: SPARK_NO_DAEMONIZE
+      value: 'true'
+    command: ["/opt/spark/sbin/start-history-server.sh"]
+    args: ["--properties-file", "/tmp/tmp/spark-defaults.conf"] 
+    volumeMounts:
+    - mountPath: /tmp/tmp
+      name: test-volume
+  volumes:
+  - name: test-volume
+    hostPath:
+      # directory location on host
+      path: /tmp
+      # this field is optional
+      type: Directory
